@@ -140,19 +140,19 @@ Task("Build")
     .Does(() => {
         MSBuild(paths.workingDirSolutionPath, new MSBuildSettings {
             Verbosity = Verbosity.Minimal,
-            ToolVersion = MSBuildToolVersion.VS2017,
+            ToolVersion = MSBuildToolVersion.VS2019,
             Configuration = configuration,
             PlatformTarget = PlatformTarget.MSIL,
         }.WithTarget("Build"));
 
         ILRepack(
-            paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard1.3/MagicChunks.dll",
-            paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard1.3/MagicChunks.dll",
-            GetFiles(paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard1.3/*.dll"),
+            paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard2.0/MagicChunks.dll",
+            paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard2.0/MagicChunks.dll",
+            GetFiles(paths.workingDirSolutionDir + "/MagicChunks/bin/" + configuration + "/netstandard2.0/*.dll"),
             new ILRepackSettings { Internalize = true });
 
-        CopyFiles(paths.workingDirSolutionDir + "/MagicChunks" + "/bin/" + configuration + "/netstandard1.3/MagicChunks*.dll", paths.workingDirDotNet);
-        CopyFiles(paths.workingDirSolutionDir + "/MagicChunks.Cake" + "/bin/" + configuration + "/netstandard1.6/MagicChunks.Cake.dll", paths.workingDirDotNet);
+        CopyFiles(paths.workingDirSolutionDir + "/MagicChunks" + "/bin/" + configuration + "/netstandard2.0/MagicChunks*.dll", paths.workingDirDotNet);
+        CopyFiles(paths.workingDirSolutionDir + "/MagicChunks.Cake" + "/bin/" + configuration + "/netstandard2.0/MagicChunks.Cake.dll", paths.workingDirDotNet);
         CopyFiles(paths.workingDirSolutionDir + "/MagicChunks/MSBuild/*.targets", paths.workingDirDotNet);
         CopyFiles(paths.workingDirSolutionDir + "/MagicChunks/Powershell/*.ps*", paths.workingDirDotNet);
     });
@@ -174,13 +174,10 @@ Task("PackNuget")
     .Description("Packs library into Nuget package")
     .IsDependentOn("Build")
     .Does(() => {
-        EnsureDirectoryExists(paths.workingDirNuget + "/netstandard1.3/MagicChunks");
-        EnsureDirectoryExists(paths.workingDirNuget + "/netstandard1.6/MagicChunks");
+        EnsureDirectoryExists(paths.workingDirNuget + "/netstandard2.0/MagicChunks");
         
         CopyFiles(resolveDirectoryPath(paths.workingDirSources + "/nuspecs") + "/*.nuspec", paths.workingDirNuget);
-        CopyFiles(paths.workingDirDotNet + "/**/*.*", paths.workingDirNuget + "/netstandard1.3/MagicChunks");
-        DeleteFile(paths.workingDirNuget + "/netstandard1.3/MagicChunks/MagicChunks.Cake.dll");
-        CopyFiles(paths.workingDirDotNet + "/**/*.*", paths.workingDirNuget + "/netstandard1.6/MagicChunks");
+        CopyFiles(paths.workingDirDotNet + "/**/*.*", paths.workingDirNuget + "/netstandard2.0/MagicChunks");
 
         foreach (string file in System.IO.Directory.EnumerateFiles(paths.workingDirNuget, "*.nuspec"))
         {
