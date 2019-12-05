@@ -1,2 +1,2 @@
-﻿npm i -g tfx-cli
-tfx extension create --manifest-globs vss-extension.json
+﻿npm i tfx-cli --loglevel error
+npx tfx extension create --manifest-globs vss-extension.json
